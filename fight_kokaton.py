@@ -42,26 +42,28 @@ class Bird:
         引数1 num：こうかとん画像ファイル名の番号
         引数2 xy：こうかとん画像の位置座標タプル
         """
-        # img0 = pg.transform.rotozoom(pg.image.load(f"{MAIN_DIR}/fig/{num}.png"), 0, 2.0)
-        # img = pg.transform.flip(img0, True, False)  # デフォルトのこうかとん（右向き）
-        # self.imgs = {  # 0度から反時計回りに定義
-        #     (+5, 0): img,  # 右
-        #     (+5, -5): pg.transform.rotozoom(img, 45, 1.0),  # 右上
-        #     (0, -5): pg.transform.rotozoom(img, 90, 1.0),  # 上
-        #     (-5, -5): pg.transform.rotozoom(img0, -45, 1.0),  # 左上
-        #     (-5, 0): img0,  # 左
-        #     (-5, +5): pg.transform.rotozoom(img0, 45, 1.0),  # 左下
-        #     (0, +5): pg.transform.rotozoom(img, -90, 1.0),  # 下
-        #     (+5, +5): pg.transform.rotozoom(img, -45, 1.0),  # 右下
-        # }
-        self.img = pg.transform.flip(  # 左右反転
-            pg.transform.rotozoom(  # 2倍に拡大
-                pg.image.load(f"{MAIN_DIR}/fig/{num}.png"), 
-                0, 
-                2.0), 
-            True, 
-            False
-        )
+        img0 = pg.transform.rotozoom(pg.image.load(f"{MAIN_DIR}/fig/{num}.png"), 0, 2.0)
+        img = pg.transform.flip(img0, True, False)  # デフォルトのこうかとん（右向き）
+        self.imgs = {  # 0度から反時計回りに定義
+            (+5, 0): img,  # 右
+            (+5, -5): pg.transform.rotozoom(img, 45, 1.0),  # 右上
+            (0, -5): pg.transform.rotozoom(img, 90, 1.0),  # 上
+            (-5, -5): pg.transform.rotozoom(img0, -45, 1.0),  # 左上
+            (-5, 0): img0,  # 左
+            (-5, +5): pg.transform.rotozoom(img0, 45, 1.0),  # 左下
+            (0, +5): pg.transform.rotozoom(img, -90, 1.0),  # 下
+            (+5, +5): pg.transform.rotozoom(img, -45, 1.0),  # 右下
+            (0, 0): img0
+        }
+        # self.img = pg.transform.flip(  # 左右反転
+        #     pg.transform.rotozoom(  # 2倍に拡大
+        #         pg.image.load(f"{MAIN_DIR}/fig/{num}.png"), 
+        #         0, 
+        #         2.0), 
+        #     True, 
+        #     False
+        # )
+        self.img = self.imgs[(+5, 0)]  # 右向きこうかとんがデフォルト
         self.rct = self.img.get_rect()
         self.rct.center = xy
 
@@ -88,6 +90,7 @@ class Bird:
         self.rct.move_ip(sum_mv)
         if check_bound(self.rct) != (True, True):
             self.rct.move_ip(-sum_mv[0], -sum_mv[1])
+        self.img = self.imgs[tuple(sum_mv)]
         screen.blit(self.img, self.rct)
 
 
@@ -170,11 +173,8 @@ def main():
                 return
         if beam is not None and bomb is not None:
             if beam.rct.colliderect(bomb.rct):
-                # 爆弾撃ち落し時に，こうかとん画像を切り替える
                 beam = None
                 bomb = None
-                bird.change_img(6, screen)
-                pg.display.update()
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
