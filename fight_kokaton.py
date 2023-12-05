@@ -2,9 +2,7 @@ import os
 import random
 import sys
 import time
-
 import pygame as pg
-
 
 WIDTH = 1200  # ゲームウィンドウの幅
 HEIGHT = 600  # ゲームウィンドウの高さ
@@ -179,7 +177,6 @@ def main():
     screen = pg.display.set_mode((WIDTH, HEIGHT))    
     bg_img = pg.image.load(f"{MAIN_DIR}/fig/pg_bg.jpg")
     bird = Bird(3, (900, 400))
-    bomb = Bomb()
     # NUM_OF_BOMS個のBombsインスタンス
     bombs = [Bomb() for i in range(NUM_OF_BOMBS)]
     beam = None
